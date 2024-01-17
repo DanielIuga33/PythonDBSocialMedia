@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from domain.Entity import Entity
 
@@ -18,7 +18,7 @@ class Person(Entity):
         self.__city = city
         self.__street = street
         self.__nr = nr
-        self.__age = self.get_birthday().year - datetime.date.year
+        self.__age = datetime.now().year - self.get_birthday().year
 
     def __eq__(self, other):
         return (self.__name == other.__name and self.__surname == other.__surname
@@ -35,7 +35,7 @@ class Person(Entity):
                 f"Street: {self.__street}, Nr: {self.__nr}")
 
     def under_age(self, age):
-        return self.get_birthday().year - datetime.date.year < age
+        return datetime.now().year - self.get_birthday().year < age
 
     def get_name(self):
         return self.__name
@@ -53,7 +53,7 @@ class Person(Entity):
         return self.__cnp
 
     def get_birthday(self):
-        return self.__birthday
+        return datetime.strptime(self.__birthday, "%d/%m/%Y")
 
     def get_country(self):
         return self.__country
