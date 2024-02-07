@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="SocialMediaPy@localhost" uuid="540f94ab-ec28-4342-ae9f-a31efd523dff">
-      <driver-ref>sqlserver.ms</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
-      <jdbc-url>jdbc:sqlserver://localhost;database=SocialMediaPy</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-    <data-source source="LOCAL" name="postgres@localhost" uuid="19196e14-0944-4c9d-a126-fbe396bdf745">
+    <data-source source="LOCAL" name="PythonSocialMedia@localhost" uuid="19196e14-0944-4c9d-a126-fbe396bdf745">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:25565/postgres</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/PythonSocialMedia</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

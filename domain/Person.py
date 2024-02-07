@@ -18,7 +18,7 @@ class Person(Entity):
         self.__city = city
         self.__street = street
         self.__nr = nr
-        self.__age = datetime.now().year - self.get_birthday().year
+        self.__age = datetime.now().year - datetime.strptime(self.__birthday, "%d/%m/%Y").year
 
     def __eq__(self, other):
         return (self.__name == other.__name and self.__surname == other.__surname
@@ -29,8 +29,11 @@ class Person(Entity):
                 and self.__nr == other.__nr)
 
     def __str__(self):
+        string = ""
+        for i in range(1, len(self.get_password())):
+            string += "*"
         return (f"Name: {self.__name}, Surname: {self.__surname}, Email: {self.__email}, "
-                f"Password: {self.__password}, Cnp: {self.__cnp}, Age: `{self.__age}, "
+                f"Password: {self.get_password()[0]}{string}, Cnp: {self.__cnp}, Age: {self.__age}, "
                 f"Country: {self.__country}, Province: {self.__province}, City: {self.__city}, "
                 f"Street: {self.__street}, Nr: {self.__nr}")
 
@@ -53,7 +56,8 @@ class Person(Entity):
         return self.__cnp
 
     def get_birthday(self):
-        return datetime.strptime(self.__birthday, "%d/%m/%Y")
+        birthday = datetime.strptime(self.__birthday, "%d/%m/%Y")
+        return datetime.strftime(birthday, "%d/%m/%Y")
 
     def get_country(self):
         return self.__country

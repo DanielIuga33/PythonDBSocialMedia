@@ -16,10 +16,14 @@ class ServicePerson:
         else:
             raise ValueError("There is no person with this id !")
 
+    def update(self, name, surname, email, password, cnp, birthday, country, province, city, street, nr, idc):
+        self.__repo.update(idc, Person(idc, name, surname, email, password, cnp, birthday, country, province,
+                                  city, street, nr))
+
     def find_by_id(self, idc):
         if self.size() > 0:
             for elem in self.get_all():
-                if int(elem.get_id()) == idc:
+                if elem.get_id_entity() == idc:
                     return elem
         return None
 
