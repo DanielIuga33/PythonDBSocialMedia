@@ -1,5 +1,3 @@
-import uuid
-
 import psycopg2
 
 from domain.Person import Person
@@ -20,15 +18,28 @@ class RepoPerson:
                 host=self.__host,
                 user=self.__user,
                 password=self.__password,
-                port=5432,
-                database="PythonSocialMedia"
+                port=25565,
+                database="postgres"
             )
             return mydb
         except psycopg2.Error as e:
-            print(f"Error connecting to {self.__host}:\n {e}")
+            try:
+                mydb2 = psycopg2.connect(
+                    host=self.__host,
+                    user=self.__user,
+                    password=self.__password,
+                    port=5432,
+                    database="PythonSocialMedia"
+                )
+                return mydb2
+            except psycopg2.Error as y:
+                print(f"Error connecting to {self.__host}:\n {e}")
+                print(f"Error connecting to {self.__host}:\n {y}")
 
     def __read(self):
         result = []
+        if self.__connect() is None:
+            raise Exception("↓ Something is wrong with the connection! ↓")
         cursor = self.__connect().cursor()
         cursor.execute('SELECT id_person, name, surname, email, password, cnp, birthday,'
                        'country, province, city, street, nr FROM public."Person"')
@@ -40,7 +51,6 @@ class RepoPerson:
     def __insert(self, elem: Person):
         conn = self.__connect()
         cursor = conn.cursor()
-        print((elem.get_id_entity()))
         sql = ('INSERT INTO public."Person" (id_person, name, surname, email, password, cnp, birthday, country,'
                ' province, city, street, nr) VALUES (%s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)')
         person_data = (str(elem.get_id_entity()), elem.get_name(), elem.get_surname(), elem.get_email(),

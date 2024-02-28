@@ -18,7 +18,7 @@ class ServicePerson:
 
     def update(self, name, surname, email, password, cnp, birthday, country, province, city, street, nr, idc):
         self.__repo.update(idc, Person(idc, name, surname, email, password, cnp, birthday, country, province,
-                                  city, street, nr))
+                                       city, street, nr))
 
     def find_by_id(self, idc):
         if self.size() > 0:
