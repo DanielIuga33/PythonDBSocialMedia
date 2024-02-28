@@ -21,11 +21,13 @@ class ServicePerson:
                                        city, street, nr))
 
     def find_by_id(self, idc):
-        if self.size() > 0:
-            for elem in self.get_all():
-                if elem.get_id_entity() == idc:
-                    return elem
-        return None
+        return self.__repo.find_by_id(idc)
+
+    def find_login(self, email, password):
+        return self.__repo.find_login(email, password)
+
+    def find_by_email(self, email):
+        return self.__repo.find_by_email(email)
 
     def get_all(self):
         return self.__repo.get_all()
