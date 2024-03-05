@@ -46,12 +46,19 @@ class UserInterface:
             password = input(" password: ")
             if password == "x" or password == "X":
                 return None
+        print("\tHi " + self.__srv_pr.find_login(email, password).get_surname() + " :) !\n")
+        print("Logging in...")
         return self.__srv_pr.find_login(email, password)
 
     def user_register(self):
         validator = PersonValidator()
         email = email_input(self.__srv_pr, validator)
-        password = input(" password: ")
+        if email is None:
+            return None
+        password = password_input(validator)
+        if password is None:
+            return None
+
 
     def user_handler(self, person):
         pass

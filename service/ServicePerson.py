@@ -29,6 +29,9 @@ class ServicePerson:
     def find_by_email(self, email):
         return self.__repo.find_by_email(email)
 
+    def exists_by_email(self, email):
+        return self.__repo.exists_by_email(email)
+
     def get_all(self):
         return self.__repo.get_all()
 

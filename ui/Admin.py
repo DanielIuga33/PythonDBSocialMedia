@@ -9,6 +9,7 @@ class Admin:
     def __init__(self, srv_pr, srv_fr):
         self.__srv_pr = srv_pr
         self.__srv_fr = srv_fr
+        self.__validator = PersonValidator()
 
     def run(self):
         while True:
@@ -69,10 +70,16 @@ class Admin:
         try:
             idc = uuid.uuid4()
             name = input("Enter the person name: ")
+            while self.__validator.validate(name, "name") is False:
+                name = input("Enter the person name: ")
             surname = input("Enter the person surname: ")
-            email = input("Enter the person email: ")
-            password = input("Enter the person password: ")
+            while self.__validator.validate(surname, "surname") is False:
+                surname = input("Enter the person surname: ")
+            email = email_input(self.__srv_pr, self.__validator)
+            password = password_input(self.__validator)
             cnp = input("Enter the person cnp: ")
+            while self.__validator.validate(cnp, "cnp") is False:
+                cnp = input("Enter the person cnp: ")
             birthday = input("Enter the person birthday(dd/mm/yyyy format): ")
             country = input("Enter the country of the person: ")
             province = input("Enter the province of the person: ")

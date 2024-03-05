@@ -81,7 +81,7 @@ class RepoPerson:
         cursor.close()
 
     def add(self, person: Person):
-        self.__val.validate(person)
+        self.__val.validate(person, "all")
         self.__repo.append(person)
         self.__insert(person)
 
@@ -90,7 +90,7 @@ class RepoPerson:
         self.__delete(person)
 
     def update(self, idc, person: Person):
-        self.__val.validate(person)
+        self.__val.validate(person, "all")
         self.__update(idc, person)
         self.__repo = self.__read()
 
@@ -105,34 +105,45 @@ class RepoPerson:
             return None
         else:
             return (Person(elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7],
-                    elem[8], elem[9], elem[10], elem[11]))
+                           elem[8], elem[9], elem[10], elem[11]))
 
     def find_by_email(self, email: str):
         conn = self.__connect()
         cursor = conn.cursor()
         sql = ('SELECT id_person, name, surname, email, password, cnp, birthday,'
                'country, province, city, street, nr FROM public."Person" WHERE email= %s LIMIT 1;')
-        cursor.execute(sql, email)
+        cursor.execute(sql, (email,))
         elem = cursor.fetchone()
         if elem is None:
             return None
         else:
             return (Person(elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7],
                            elem[8], elem[9], elem[10], elem[11]))
+
+    def exists_by_email(self, email):
+        conn = self.__connect()
+        cursor = conn.cursor()
+        sql = ('SELECT id_person, name, surname, email, password, cnp, birthday,'
+               'country, province, city, street, nr FROM public."Person" WHERE email= %s LIMIT 1;')
+        cursor.execute(sql, (email,))
+        elem = cursor.fetchone()
+        if elem is None:
+            return False
+        else:
+            return True
 
     def find_by_id(self, idc):
         conn = self.__connect()
         cursor = conn.cursor()
         sql = ('SELECT id_person, name, surname, email, password, cnp, birthday,'
                'country, province, city, street, nr FROM public."Person" WHERE id_person= %s LIMIT 1;')
-        cursor.execute(sql, idc)
+        cursor.execute(sql, (idc,))
         elem = cursor.fetchone()
         if elem is None:
             return None
         else:
             return (Person(elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7],
                            elem[8], elem[9], elem[10], elem[11]))
-
 
     def get_all(self):
         return self.__repo
