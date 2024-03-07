@@ -6,6 +6,7 @@ from domain.Personvalidator import PersonValidator
 
 class RepoPerson:
     def __init__(self, user, password):
+        self.__x = "pc"  # on which device I want to connect
         self.__host = "localhost"
         self.__user = user
         self.__password = password
@@ -13,16 +14,19 @@ class RepoPerson:
         self.__val = PersonValidator()
 
     def __connect(self):
-        try:
-            mydb = psycopg2.connect(
-                host=self.__host,
-                user=self.__user,
-                password=self.__password,
-                port=25565,
-                database="postgres"
-            )
-            return mydb
-        except psycopg2.Error as e:
+        if self.__x == "laptop":
+            try:
+                mydb = psycopg2.connect(
+                    host=self.__host,
+                    user=self.__user,
+                    password=self.__password,
+                    port=25565,
+                    database="postgres"
+                )
+                return mydb
+            except psycopg2.Error as e:
+                print(f"Error connecting to {self.__host}:\n {e}")
+        elif self.__x == "pc":
             try:
                 mydb2 = psycopg2.connect(
                     host=self.__host,
@@ -33,7 +37,6 @@ class RepoPerson:
                 )
                 return mydb2
             except psycopg2.Error as y:
-                print(f"Error connecting to {self.__host}:\n {e}")
                 print(f"Error connecting to {self.__host}:\n {y}")
 
     def __read(self):
