@@ -1,8 +1,5 @@
 import uuid
 
-from domain.Friendship import Friendship
-from domain.Personvalidator import PersonValidator
-from service.ServicePerson import ServicePerson
 from ui.Admin import Admin
 from utils.Prints import *
 from utils.Functions import *
@@ -36,29 +33,44 @@ class UserInterface:
                     print("Invalid choice !")
 
     def user_login(self):
-        email = input(" email: ")
-        password = input(" password: ")
-        while self.__srv_pr.find_login(email, password) is None:
-            print("Invalid email or password !\nPlease try again or type x to quit.")
-            email = input(" email: ")
-            if email == "x" or email == "X":
-                return None
-            password = input(" password: ")
-            if password == "x" or password == "X":
-                return None
-        print("\tHi " + self.__srv_pr.find_login(email, password).get_surname() + " :) !\n")
-        print("Logging in...")
-        return self.__srv_pr.find_login(email, password)
+        try:
+            email = email_login(self.__srv_pr)
+            password = password_login(self.__srv_pr)
+            print("\tHi " + self.__srv_pr.find_login(email, password).get_surname() + " :) !\n")
+            print("Logging in...")
+            return self.__srv_pr.find_login(email, password)
+        except ValueError:
+            return None
 
     def user_register(self):
-        validator = PersonValidator()
-        email = email_input(self.__srv_pr, validator)
-        if email is None:
-            return None
-        password = password_input(validator)
-        if password is None:
-            return None
+        try:
+            name = string_input("name")
+            surname = string_input("surname")
+            email = email_register(self.__srv_pr)
+            password = password_register()
+            print("Registration was completed successfully !")
+            print("\tHi " + surname + " do you want to add some personal \n about you? ")
+            print("\t [1] Yes \n\t [2] Later")
+            option = input("\nEnter your choice: ")
+            if option == "1":
+                try:
+                    cnp = string_input("cnp")
+                except ValueError:
+                    cnp = ""
+                birthday = input("Enter the person birthday(dd/mm/yyyy format): ")
+                country = input("*Enter the country of the person: ")
+                province = input("*Enter the province of the person: ")
+                city = input("*Enter the city/village of the person: ")
+                street = input("*Enter the street: ")
+                nr = input("*Enter the number: ")
+                self.__srv_pr.add(uuid.uuid4(), name, surname, email, password, cnp, birthday, country,
+                                  province, city, street, nr)
+            else:
+                self.__srv_pr.add(uuid.uuid4(), name, surname, email, password, "", "", "",
+                                  "", "", "", "")
 
+        except ValueError:
+            return None
 
     def user_handler(self, person):
         pass

@@ -69,23 +69,17 @@ class Admin:
     def ui_add_person(self):
         try:
             idc = uuid.uuid4()
-            name = input("Enter the person name: ")
-            while self.__validator.validate(name, "name") is False:
-                name = input("Enter the person name: ")
-            surname = input("Enter the person surname: ")
-            while self.__validator.validate(surname, "surname") is False:
-                surname = input("Enter the person surname: ")
-            email = email_input(self.__srv_pr, self.__validator)
-            password = password_input(self.__validator)
-            cnp = input("Enter the person cnp: ")
-            while self.__validator.validate(cnp, "cnp") is False:
-                cnp = input("Enter the person cnp: ")
+            name = string_input("name")
+            surname = string_input("surname")
+            email = email_register(self.__srv_pr)
+            password = password_register()
+            cnp = string_input("cnp")
             birthday = input("Enter the person birthday(dd/mm/yyyy format): ")
-            country = input("Enter the country of the person: ")
-            province = input("Enter the province of the person: ")
-            city = input("Enter the city/village of the person: ")
-            street = input("Enter the street: ")
-            nr = input("Enter the number: ")
+            country = input("*Enter the country of the person: ")
+            province = input("*Enter the province of the person: ")
+            city = input("*Enter the city/village of the person: ")
+            street = input("*Enter the street: ")
+            nr = input("*Enter the number: ")
             self.__srv_pr.add(idc, name, surname, email, password, cnp, birthday, country, province, city, street, nr)
         except ValueError as e:
             print(e)
@@ -94,14 +88,18 @@ class Admin:
         if self.__srv_pr.size() == 0:
             print("No persons for now !")
             return
-        for i in range(0, self.__srv_pr.size()):
-            print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
-        print("-----------------------------------------------------")
-        nb = int(input("Enter the number of the person you want to delete: "))
-        if nb > self.__srv_pr.size() or nb < 1:
-            print("Invalid Person Number !")
-            return
-        self.__srv_pr.delete(self.__srv_pr.get_all()[nb - 1].get_id_entity())
+        try:
+            for i in range(0, self.__srv_pr.size()):
+                print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
+            print("-----------------------------------------------------")
+            nb = int(input("Enter the number of the person you want to delete: "))
+            if nb > self.__srv_pr.size() or nb < 1:
+                print("Invalid Person Number !")
+                return
+            self.__srv_fr.delete_cascade(self.__srv_pr.get_all()[nb - 1].get_id_entity())
+            self.__srv_pr.delete(self.__srv_pr.get_all()[nb - 1].get_id_entity())
+        except Exception as e:
+            print(e)
 
     def ui_update_person(self):
         if self.__srv_pr.size() == 0:
@@ -213,25 +211,47 @@ class Admin:
         # --{ FRIENDSHIP MENU }------------------------------------------------------------------------------------
 
     def ui_add_friendship(self):
-        for i in range(0, self.__srv_pr.size()):
-            print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
-        print("-----------------------------------------------------")
-        pr1 = int(input("Enter the first person: "))
-        pr2 = int(input("Enter the second person: "))
-        if pr1 == pr2:
-            print("A person cannot be friend with himself !")
-            return
-        pr1 = self.__srv_pr.get_all()[pr1 - 1].get_id_entity()
-        pr2 = self.__srv_pr.get_all()[pr2 - 1].get_id_entity()
-        self.__srv_fr.add(Friendship(0, pr1, pr2))
+        try:
+            for i in range(0, self.__srv_pr.size()):
+                print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
+            print("-----------------------------------------------------")
+            pr1 = int(input("Enter the first person: "))
+            pr2 = int(input("Enter the second person: "))
+            if pr1 == pr2:
+                print("A person cannot be friend with himself !")
+                return
+            pr1 = self.__srv_pr.get_all()[pr1 - 1].get_id_entity()
+            pr2 = self.__srv_pr.get_all()[pr2 - 1].get_id_entity()
+            self.__srv_fr.add(Friendship(0, pr1, pr2))
+        except Exception as e:
+            print(e)
 
     def ui_del_friendship(self):
-        pass
+        if self.__srv_fr.size() == 0:
+            print("There are no friendships yet !")
+            return
+        try:
+            for i in range(0, self.__srv_fr.size()):
+                person1 = (self.__srv_pr.find_by_id(self.__srv_fr.get_all()[i].get_person1()).get_name() + " " +
+                           self.__srv_pr.find_by_id(self.__srv_fr.get_all()[i].get_person1()).get_surname())
+                person2 = (self.__srv_pr.find_by_id(self.__srv_fr.get_all()[i].get_person2()).get_name() + " " +
+                           self.__srv_pr.find_by_id(self.__srv_fr.get_all()[i].get_person2()).get_surname())
+                print(f"[{i + 1}]-> {person1 + " is friend with " + person2}")
+            nb = int(input("Enter the number of the friendship you want to delete: "))
+            if nb > self.__srv_pr.size() or nb < 1:
+                print("Invalid Friendship Number !")
+                return
+            self.__srv_fr.delete(self.__srv_fr.get_all()[nb - 1])
+        except Exception as e:
+            print(e)
 
     def ui_update_friendship(self):
         pass
 
     def ui_show_all_fr(self):
+        if self.__srv_fr.size() == 0:
+            print("No friendships for now..")
+            return
         for elem in self.__srv_fr.get_all():
             person1 = (self.__srv_pr.find_by_id(elem.get_person1()).get_name() + " " +
                        self.__srv_pr.find_by_id(elem.get_person1()).get_surname())

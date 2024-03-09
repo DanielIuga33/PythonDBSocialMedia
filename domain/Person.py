@@ -18,7 +18,10 @@ class Person(Entity):
         self.__city = city
         self.__street = street
         self.__nr = nr
-        self.__age = datetime.now().year - datetime.strptime(self.__birthday, "%d/%m/%Y").year
+        if self.__birthday != "":
+            self.__age = datetime.now().year - datetime.strptime(self.__birthday, "%d/%m/%Y").year
+        else:
+            self.__age = ""
 
     def __eq__(self, other):
         return (self.__name == other.__name and self.__surname == other.__surname
@@ -56,6 +59,8 @@ class Person(Entity):
         return self.__cnp
 
     def get_birthday(self):
+        if self.__birthday == "":
+            return ""
         birthday = datetime.strptime(self.__birthday, "%d/%m/%Y")
         return datetime.strftime(birthday, "%d/%m/%Y")
 

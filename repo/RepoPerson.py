@@ -6,7 +6,7 @@ from domain.Personvalidator import PersonValidator
 
 class RepoPerson:
     def __init__(self, user, password):
-        self.__x = "pc"  # on which device I want to connect
+        self.__x = "laptop"  # on which device I want to connect
         self.__host = "localhost"
         self.__user = user
         self.__password = password
@@ -49,6 +49,7 @@ class RepoPerson:
         for elem in cursor.fetchall():
             result.append(Person(elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7],
                                  elem[8], elem[9], elem[10], elem[11]))
+        cursor.close()
         return result
 
     def __insert(self, elem: Person):
@@ -62,6 +63,7 @@ class RepoPerson:
         cursor.execute(sql, person_data)
         conn.commit()
         cursor.close()
+        conn.close()
 
     def __delete(self, elem: Person):
         conn = self.__connect()
@@ -71,6 +73,7 @@ class RepoPerson:
         cursor.execute(sql, (str(elem.get_id_entity()),))
         conn.commit()
         cursor.close()
+        conn.close()
 
     def __update(self, idp, p: Person):
         conn = self.__connect()
@@ -82,9 +85,10 @@ class RepoPerson:
                              p.get_nr(), idp))
         conn.commit()
         cursor.close()
+        conn.close()
 
     def add(self, person: Person):
-        self.__val.validate(person, "all")
+        self.__val.validate_essentials(person)
         self.__repo.append(person)
         self.__insert(person)
 
@@ -105,8 +109,10 @@ class RepoPerson:
         cursor.execute(sql, (email, password))
         elem = cursor.fetchone()
         if elem is None:
+            conn.close()
             return None
         else:
+            conn.close()
             return (Person(elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7],
                            elem[8], elem[9], elem[10], elem[11]))
 
@@ -118,8 +124,10 @@ class RepoPerson:
         cursor.execute(sql, (email,))
         elem = cursor.fetchone()
         if elem is None:
+            conn.close()
             return None
         else:
+            conn.close()
             return (Person(elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7],
                            elem[8], elem[9], elem[10], elem[11]))
 
@@ -131,8 +139,24 @@ class RepoPerson:
         cursor.execute(sql, (email,))
         elem = cursor.fetchone()
         if elem is None:
+            conn.close()
             return False
         else:
+            conn.close()
+            return True
+
+    def exists_by_password(self, password):
+        conn = self.__connect()
+        cursor = conn.cursor()
+        sql = ('SELECT id_person, name, surname, email, password, cnp, birthday,'
+               'country, province, city, street, nr FROM public."Person" WHERE password= %s LIMIT 1;')
+        cursor.execute(sql, (password,))
+        elem = cursor.fetchone()
+        if elem is None:
+            conn.close()
+            return False
+        else:
+            conn.close()
             return True
 
     def find_by_id(self, idc):

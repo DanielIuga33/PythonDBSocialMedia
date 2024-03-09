@@ -6,55 +6,56 @@ class PersonValidator:
         match att:
             case "name":
                 if elem == "":
-                    print("You must complete the name field before proceeding !")
-                    return False
+                    raise ValueError("You must complete the name field before proceeding !")
             case "surname":
                 if elem == "":
-                    print("You must complete the surname field before proceeding !")
-                    return False
+                    raise ValueError("You must complete the surname field before proceeding !")
             case "cnp":
                 if elem.isdigit() is False:
-                    print("CNP must contain only numbers !")
-                    return False
+                    raise ValueError("CNP must contain only numbers !")
                 if len(elem) != 13:
-                    print("Invalid CNP !")
-                    return False
+                    raise ValueError("Invalid CNP !")
             case "country":
                 if elem == "":
-                    print("You must complete the name field before proceeding !")
-                    return False
+                    raise ValueError("You must complete the country field before proceeding !")
             case "province":
                 if elem == "":
-                    print("You must complete the name field before proceeding !")
-                    return False
+                    raise ValueError("You must complete the province field before proceeding !")
             case "city":
                 if elem == "":
-                    print("You must complete the name field before proceeding !")
-                    return False
+                    raise ValueError("You must complete the city field before proceeding !")
             case "street":
                 if elem == "":
-                    print("You must complete the name field before proceeding !")
-                    return False
+                    raise ValueError("You must complete the street field before proceeding !")
             case "all":
                 return self.__validate_all(elem)
 
     def __validate_all(self, person: Person) -> bool:
         try:
-            if (self.validate(person.get_name(), "name")
-                    or self.validate(person.get_surname(), "surname")
-                    or self.validate(person.get_cnp(), "cnp")
-                    or self.validate(person.get_birthday(), "birthday")
-                    or self.validate(person.get_country(), "country")
-                    or self.validate(person.get_province(), "province")
-                    or self.validate(person.get_city(), "city")
-                    or self.validate(person.get_street(), "street")
-                    or self.validate(person.get_nr(), "nr") is False):
-                return False
+            self.validate(person.get_name(), "name")
+            self.validate(person.get_surname(), "surname")
+            self.validate_email(person.get_email())
+            self.validate_password(person.get_password())
+            self.validate(person.get_cnp(), "cnp")
+            self.validate(person.get_birthday(), "birthday")
+            self.validate(person.get_country(), "country")
+            self.validate(person.get_province(), "province")
+            self.validate(person.get_city(), "city")
+            self.validate(person.get_street(), "street")
+            self.validate(person.get_nr(), "nr")
+        except Exception as e:
+            print(e)
+            return False
+
+    def validate_essentials(self, person: Person) -> bool:
+        try:
+            self.validate(person.get_name(), "name")
+            self.validate(person.get_surname(), "surname")
             self.validate_email(person.get_email())
             self.validate_password(person.get_password())
         except Exception as e:
             print(e)
-            return False
+            return  False
 
     def validate_email(self, email):
         errors = ""

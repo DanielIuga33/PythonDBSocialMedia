@@ -1,5 +1,6 @@
-from domain.Friendship import Friendship
 import psycopg2
+
+from domain.Request import Request
 
 
 class RepoFriendship:
@@ -38,12 +39,12 @@ class RepoFriendship:
         if self.__connect() is None:
             raise Exception("↓ Something is wrong with the connection! ↓")
         cursor = self.__connect().cursor()
-        cursor.execute('SELECT id_friendship, person1, person2 FROM public."Friendship"')
+        cursor.execute('SELECT id_request, person1, person2 FROM public."Request"')
         for elem in cursor.fetchall():
-            result.append(Friendship(elem[0], elem[1], elem[2]))
+            result.append(Request(elem[0], elem[1], elem[2]))
         return result
 
-    def __insert(self, elem: Friendship):
+    def __insert(self, elem: Request):
         conn = self.__connect()
         cursor = conn.cursor()
         sql = 'INSERT INTO public."Friendship" (person1, person2) VALUES (%s, %s)'
