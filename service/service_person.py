@@ -1,5 +1,5 @@
-from domain.Person import Person
-from repo.RepoPerson import RepoPerson
+from domain.person import Person
+from repo.repo_person import RepoPerson
 
 
 class ServicePerson:

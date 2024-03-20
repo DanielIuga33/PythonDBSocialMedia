@@ -1,6 +1,6 @@
-from domain.Personvalidator import PersonValidator
-from repo.RepoFriendship import RepoFriendship
-from service.ServicePerson import ServicePerson
+from domain.person_validator import PersonValidator
+from repo.repo_friendship import RepoFriendship
+from service.service_person import ServicePerson
 
 
 def string_input(tip):
@@ -25,7 +25,7 @@ def string_input(tip):
             except ValueError as ve:
                 print(ve)
                 print("\nPlease try again or type x to quit.")
-                elem = input("Enter the person name: ")
+                elem = input("cnp: ")
                 if elem == "x":
                     raise ValueError
         case "country":

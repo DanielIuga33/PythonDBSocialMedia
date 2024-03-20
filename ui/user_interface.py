@@ -1,15 +1,17 @@
 import uuid
 
-from ui.Admin import Admin
-from utils.Prints import *
-from utils.Functions import *
+from ui.admin import Admin
+from utils.prints import *
+from utils.functions import *
 
 
 class UserInterface:
-    def __init__(self, srv_pr: ServicePerson, srv_fr):
+    def __init__(self, srv_pr: ServicePerson, srv_fr, srv_request, srv_notification):
         self.__srv_pr = srv_pr
+        self.__srv_req = srv_request
         self.__srv_fr = srv_fr
-        self.__admin = Admin(self.__srv_pr, self.__srv_fr)
+        self.__srv_ntf = srv_notification
+        self.__admin = Admin(self.__srv_pr, self.__srv_fr, self.__srv_req, self.__srv_ntf)
 
     def run(self):
         while True:
@@ -53,10 +55,12 @@ class UserInterface:
             print("\t [1] Yes \n\t [2] Later")
             option = input("\nEnter your choice: ")
             if option == "1":
-                try:
-                    cnp = string_input("cnp")
-                except ValueError:
-                    cnp = ""
+                cnp = ""
+                while cnp == "":
+                    try:
+                        cnp = string_input("cnp")
+                    except ValueError:
+                        cnp = ""
                 birthday = input("Enter the person birthday(dd/mm/yyyy format): ")
                 country = input("*Enter the country of the person: ")
                 province = input("*Enter the province of the person: ")

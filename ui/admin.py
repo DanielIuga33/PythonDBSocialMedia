@@ -1,14 +1,17 @@
 import uuid
 
-from domain.Friendship import Friendship
-from utils.Prints import *
-from utils.Functions import *
+from domain.friendship import Friendship
+from domain.request import Request
+from utils.prints import *
+from utils.functions import *
 
 
 class Admin:
-    def __init__(self, srv_pr, srv_fr):
+    def __init__(self, srv_pr, srv_fr, srv_req, srv_ntf):
         self.__srv_pr = srv_pr
         self.__srv_fr = srv_fr
+        self.__srv_req = srv_req
+        self.__srv_ntf = srv_ntf
         self.__validator = PersonValidator()
 
     def run(self):
@@ -19,7 +22,13 @@ class Admin:
                 case "1":
                     self.person_menu()
                 case "2":
+                    self.request_menu()
+                case "3":
                     self.friendship_menu()
+                case "4":
+                    self.conversation_menu()
+                case "5":
+                    self.notification_menu()
                 case "x":
                     break
                 case _:
@@ -38,6 +47,27 @@ class Admin:
                     self.ui_update_person()
                 case "a":
                     self.ui_show_all_ps()
+                case "x":
+                    break
+                case _:
+                    print("Invalid choice !")
+
+    def request_menu(self):
+        if self.__srv_pr.size() <= 1:
+            print("You have to add at least 2 persons !")
+            return
+        while True:
+            print_admin_request_menu()
+            choice = input("Give here your choice: ")
+            match choice:
+                case "1":
+                    self.ui_add_request()
+                case "2":
+                    self.ui_del_request()
+                case "3":
+                    self.ui_update_request()
+                case "a":
+                    self.ui_show_all_req()
                 case "x":
                     break
                 case _:
@@ -64,6 +94,48 @@ class Admin:
                 case _:
                     print("Invalid choice !")
 
+    def conversation_menu(self):
+        if self.__srv_fr.size() == 0:
+            print("You have to add at least 1 Friendship !")
+            return
+        while True:
+            print_admin_conversation_menu()
+            choice = input("Give here your choice: ")
+            match choice:
+                case "1":
+                    self.ui_add_conversation()
+                case "2":
+                    self.ui_del_conversation()
+                case "3":
+                    self.ui_update_conversation()
+                case "a":
+                    self.ui_show_all_cnv()
+                case "x":
+                    break
+                case _:
+                    print("Invalid choice !")
+
+    def notification_menu(self):
+        if self.__srv_pr.size() == 0:
+            print("You have to add at least 1 persons !")
+            return
+        while True:
+            print_admin_notification_menu()
+            choice = input("Give here your choice: ")
+            match choice:
+                case "1":
+                    self.ui_add_notification()
+                case "2":
+                    self.ui_del_notification()
+                case "3":
+                    self.ui_update_notification()
+                case "a":
+                    self.ui_show_all_ntf()
+                case "x":
+                    break
+                case _:
+                    print("Invalid choice !")
+
         # --{ PERSON MENU }----------------------------------------------------------------------------------------
 
     def ui_add_person(self):
@@ -81,6 +153,7 @@ class Admin:
             street = input("*Enter the street: ")
             nr = input("*Enter the number: ")
             self.__srv_pr.add(idc, name, surname, email, password, cnp, birthday, country, province, city, street, nr)
+            print("Person added successfully !")
         except ValueError as e:
             print(e)
 
@@ -96,8 +169,9 @@ class Admin:
             if nb > self.__srv_pr.size() or nb < 1:
                 print("Invalid Person Number !")
                 return
-            self.__srv_fr.delete_cascade(self.__srv_pr.get_all()[nb - 1].get_id_entity())
-            self.__srv_pr.delete(self.__srv_pr.get_all()[nb - 1].get_id_entity())
+            self.__srv_fr.delete_cascade(self.__srv_pr.get_all()[nb - 1].get_id_person())
+            self.__srv_pr.delete(self.__srv_pr.get_all()[nb - 1].get_id_person())
+            print("Person deleted successfully !")
         except Exception as e:
             print(e)
 
@@ -129,7 +203,7 @@ class Admin:
             street = input("Enter the street: ")
             nr = input("Enter the number: ")
             self.__srv_pr.update(name, surname, email, password, cnp, birthday, country, province, city, street, nr,
-                                 self.__srv_pr.get_all()[nb - 1].get_id_entity())
+                                 self.__srv_pr.get_all()[nb - 1].get_id_person())
         elif yn in ["N", "n"]:
             print("[1] name       [7] country ")
             print("[2] surname    [8] province")
@@ -202,11 +276,64 @@ class Admin:
                 if nr == "":
                     nr = person.get_nr()
                 self.__srv_pr.update(name, surname, email, password, cnp, birthday, country, province, city, street, nr,
-                                     person.get_id_entity())
+                                     person.get_id_person())
+                print("Person updated successfully !")
 
     def ui_show_all_ps(self):
         for elem in self.__srv_pr.get_all():
             print(elem)
+        # --{ REQUEST MENU }---------------------------------------------------------------------------------------
+
+    def ui_add_request(self):
+        try:
+            for i in range(0, self.__srv_pr.size()):
+                print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
+            print("-----------------------------------------------------")
+            pr1 = int(input("Enter the first person: "))
+            pr2 = int(input("Enter the second person: "))
+            if pr1 == pr2:
+                print("A person cannot request himself !")
+                return
+            pr1 = self.__srv_pr.get_all()[pr1 - 1].get_id_person()
+            pr2 = self.__srv_pr.get_all()[pr2 - 1].get_id_person()
+            self.__srv_req.add(Request(0, pr1, pr2))
+            print("Request added successfully !")
+        except Exception as e:
+            print(e)
+
+    def ui_del_request(self):
+        if self.__srv_req.size() == 0:
+            print("There are no requests yet !")
+            return
+        try:
+            for i in range(0, self.__srv_req.size()):
+                person1 = (self.__srv_pr.find_by_id(self.__srv_req.get_all()[i].get_sender()).get_name() + " " +
+                           self.__srv_pr.find_by_id(self.__srv_req.get_all()[i].get_sender()).get_surname())
+                person2 = (self.__srv_pr.find_by_id(self.__srv_req.get_all()[i].get_receiver()).get_name() + " " +
+                           self.__srv_pr.find_by_id(self.__srv_req.get_all()[i].get_receiver()).get_surname())
+                print(f"[{i + 1}]-> {person1 + " wants to be friend with " + person2}")
+            nb = int(input("Enter the number of request you want to delete: "))
+            if nb > self.__srv_req.size() or nb < 1:
+                print("Invalid Request Number !")
+                return
+            self.__srv_req.delete(self.__srv_req.get_all()[nb - 1])
+            print("Request deleted successfully!")
+        except Exception as e:
+            print(e)
+
+    def ui_update_request(self):
+        pass
+
+    def ui_show_all_req(self):
+        if self.__srv_req.size() == 0:
+            print("No requests for now..")
+            return
+        for elem in self.__srv_req.get_all():
+            person1 = (self.__srv_pr.find_by_id(elem.get_sender()).get_name() + " " +
+                       self.__srv_pr.find_by_id(elem.get_sender()).get_surname())
+            person2 = (self.__srv_pr.find_by_id(elem.get_receiver()).get_name() + " " +
+                       self.__srv_pr.find_by_id(elem.get_receiver()).get_surname())
+            print(person1 + " wants to be friend with " + person2)
 
         # --{ FRIENDSHIP MENU }------------------------------------------------------------------------------------
 
@@ -220,9 +347,10 @@ class Admin:
             if pr1 == pr2:
                 print("A person cannot be friend with himself !")
                 return
-            pr1 = self.__srv_pr.get_all()[pr1 - 1].get_id_entity()
-            pr2 = self.__srv_pr.get_all()[pr2 - 1].get_id_entity()
-            self.__srv_fr.add(Friendship(0, pr1, pr2))
+            pr1 = self.__srv_pr.get_all()[pr1 - 1].get_id_person()
+            pr2 = self.__srv_pr.get_all()[pr2 - 1].get_id_person()
+            self.__srv_fr.add(pr1, pr2)
+            print("Friendship added successfully !")
         except Exception as e:
             print(e)
 
@@ -242,6 +370,7 @@ class Admin:
                 print("Invalid Friendship Number !")
                 return
             self.__srv_fr.delete(self.__srv_fr.get_all()[nb - 1])
+            print("Friendship deleted successfully !")
         except Exception as e:
             print(e)
 
@@ -258,3 +387,74 @@ class Admin:
             person2 = (self.__srv_pr.find_by_id(elem.get_person2()).get_name() + " " +
                        self.__srv_pr.find_by_id(elem.get_person2()).get_surname())
             print(person1 + " is friend with " + person2)
+
+    # --{ CONVERSATION MENU }----------------------------------------------------------------------------------
+
+    def ui_add_conversation(self):
+        try:
+            for i in range(0, self.__srv_pr.size()):
+                print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
+            print("-----------------------------------------------------")
+            sender = int(input("Enter the person who sends the message: "))
+            receiver = int(input("Enter the person who receives the message: "))
+            if sender == receiver:
+                print("A person cannot message himself !")
+                return
+            sender = self.__srv_pr.get_all()[sender - 1].get_id_person()
+            receiver = self.__srv_pr.get_all()[receiver - 1].get_id_person()
+            if self.__srv_fr.find_friendship(sender, receiver) == -1:
+                print(f" {sender.get_name()} and {receiver.get_name()} need to be friends\n"
+                      f"in order to have a conversation !")
+                return
+            text = input("Enter the message: ")
+            friendship = self.__srv_fr.find_friendship(sender, receiver)
+            if self.__srv_fr.find_by_id(friendship).get_person1() == sender:
+                self.__srv_conv.add(Conversation(0, friendship, text), "0")
+            else:
+                self.__srv_conv.add(Conversation(0, friendship, text), "1")
+        except Exception as e:
+            print(e)
+
+    def ui_del_conversation(self):
+        if self.__srv_conv.size() == 0:
+            print("No conversations yet !")
+            return
+        for i in range(0, self.__srv_conv.size()):
+            pr1 = self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(self.__srv_conv.get_all()[i].get_id_friendship())
+                                           .get_person1()).get_surname()
+            pr2 = self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(self.__srv_conv.get_all()[i].get_id_friendship())
+                                           .get_person2()).get_surname()
+            print(f"[{i + 1}]-> {pr1} and {pr2} have a conversation")
+        nb = int(input("Enter the number of the conversation you want to delete: "))
+        if nb > self.__srv_conv.size() or nb < 1:
+            print("Invalid Conversation Number !")
+            return
+        self.__srv_conv.delete(self.__srv_conv.get_all()[nb - 1])
+        print("Conversation deleted successfully !")
+
+    def ui_update_conversation(self):
+        pass
+
+    def ui_show_all_cnv(self):
+        if self.__srv_conv.size() == 0:
+            print("No conversations yet !")
+            return
+        for elem in self.__srv_conv.get_all():
+            print(f"{self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(elem.get_id_friendship()).get_person1()).
+                  get_surname()} has a conversation with "
+                  f"{self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(elem.get_id_friendship()).get_person2()).
+                  get_surname()}")
+            print(elem.get_text())
+
+    # --{ NOTIFICATION MENU }----------------------------------------------------------------------------------
+    def ui_add_notification(self):
+        pass
+
+    def ui_del_notification(self):
+        pass
+
+    def ui_update_notification(self):
+        pass
+
+    def ui_show_all_ntf(self):
+        pass

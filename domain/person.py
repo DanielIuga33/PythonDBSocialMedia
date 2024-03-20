@@ -1,12 +1,10 @@
 from datetime import datetime
 
-from domain.Entity import Entity
 
-
-class Person(Entity):
-    def __init__(self, id_entity, name, surname, email, password, cnp,
+class Person:
+    def __init__(self, id_person, name, surname, email, password, cnp,
                  birthday, country, province, city, street, nr):
-        super().__init__(id_entity)
+        self.__id_person = id_person
         self.__name = name
         self.__surname = surname
         self.__email = email
@@ -43,6 +41,9 @@ class Person(Entity):
     def under_age(self, age):
         return datetime.now().year - self.get_birthday().year < age
 
+    def get_id_person(self):
+        return self.__id_person
+
     def get_name(self):
         return self.__name
 
@@ -78,6 +79,9 @@ class Person(Entity):
 
     def get_nr(self):
         return self.__nr
+
+    def set_id_person(self, id_person):
+        self.__id_person = id_person
 
     def set_name(self, name):
         self.__name = name
