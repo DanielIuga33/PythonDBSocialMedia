@@ -100,7 +100,7 @@ class RepoFriendship:
         else:
             return -1
 
-    def find_by_id(self, idp):
+    def find_by_id(self, idp) -> Friendship:
         cursor = self.connect().cursor()
         sql1 = 'SELECT person1, person2, conversation FROM public."Friendship" WHERE id_friendship = %s LIMIT 1;'
         # sql2 = 'SELECT person2 FROM public."Friendship" WHERE id_friendship = %s LIMIT 1;'

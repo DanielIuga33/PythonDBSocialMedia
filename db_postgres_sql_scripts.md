@@ -33,7 +33,7 @@ create table "Person"
     province  varchar,
     city      varchar,
     street    varchar,
-    age       varchar
+    nr       varchar
 );
 
 alter table "Person"
@@ -79,7 +79,7 @@ create table "Notification"
 (
     id_notification uuid default uuid_generate_v4(),
     person          uuid,
-    tp            varchar,
+    tip            varchar,
     message         varchar
 );
 
