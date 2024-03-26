@@ -105,7 +105,9 @@ class RepoFriendship:
         sql1 = 'SELECT person1, person2, conversation FROM public."Friendship" WHERE id_friendship = %s LIMIT 1;'
         # sql2 = 'SELECT person2 FROM public."Friendship" WHERE id_friendship = %s LIMIT 1;'
         cursor.execute(sql1, (str(idp),))
-        person1, person2, conversation = cursor.fetchall()
+        item = cursor.fetchall()
+        item = item[0]
+        person1, person2, conversation = item[0], item[1], item[2]
         # cursor.execute(sql2, (str(idp),))
         # person2 = cursor.fetchone()[0]
         return Friendship(idp, person1, person2, conversation)

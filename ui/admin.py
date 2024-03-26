@@ -1,6 +1,5 @@
 import uuid
 
-from domain.friendship import Friendship
 from domain.request import Request
 from utils.prints import *
 from utils.functions import *
@@ -391,59 +390,60 @@ class Admin:
     # --{ CONVERSATION MENU }----------------------------------------------------------------------------------
 
     def ui_add_conversation(self):
-        try:
-            for i in range(0, self.__srv_pr.size()):
-                print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
-            print("-----------------------------------------------------")
-            sender = int(input("Enter the person who sends the message: "))
-            receiver = int(input("Enter the person who receives the message: "))
-            if sender == receiver:
-                print("A person cannot message himself !")
-                return
-            sender = self.__srv_pr.get_all()[sender - 1].get_id_person()
-            receiver = self.__srv_pr.get_all()[receiver - 1].get_id_person()
-            if self.__srv_fr.find_friendship(sender, receiver) == -1:
-                print(f" {sender.get_name()} and {receiver.get_name()} need to be friends\n"
-                      f"in order to have a conversation !")
-                return
-            text = input("Enter the message: ")
-            friendship = self.__srv_fr.find_friendship(sender, receiver)
-            if self.__srv_fr.find_by_id(friendship).get_person1() == sender:
-                self.__srv_conv.add(Conversation(0, friendship, text), "0")
-            else:
-                self.__srv_conv.add(Conversation(0, friendship, text), "1")
-        except Exception as e:
-            print(e)
+        # try:
+        for i in range(0, self.__srv_pr.size()):
+            print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
+        print("-----------------------------------------------------")
+        sender = int(input("Enter the person who sends the message: "))
+        receiver = int(input("Enter the person who receives the message: "))
+        if sender == receiver:
+            print("A person cannot message himself !")
+            return
+        sender = self.__srv_pr.get_all()[sender - 1].get_id_person()
+        receiver = self.__srv_pr.get_all()[receiver - 1].get_id_person()
+        if self.__srv_fr.find_friendship(sender, receiver) == -1:
+            print(f" {sender.get_name()} and {receiver.get_name()} need to be friends\n"
+                  f"in order to have a conversation !")
+            return
+        text = input("Enter the message: ")
+        friendship = self.__srv_fr.find_friendship(sender, receiver)
+        self.__srv_fr.add_conversation(self.__srv_pr.find_by_id(sender), friendship, text)
+
+    # except Exception as e:
+    # print(e)
 
     def ui_del_conversation(self):
-        if self.__srv_conv.size() == 0:
+        if len(self.__srv_fr.get_all_friends_with_conversations()) == 0:
             print("No conversations yet !")
             return
-        for i in range(0, self.__srv_conv.size()):
-            pr1 = self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(self.__srv_conv.get_all()[i].get_id_friendship())
-                                           .get_person1()).get_surname()
-            pr2 = self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(self.__srv_conv.get_all()[i].get_id_friendship())
-                                           .get_person2()).get_surname()
+        for i in range(0, len(self.__srv_fr.get_all_friends_with_conversations())):
+            pr1 = self.__srv_pr.find_by_id(
+                self.__srv_fr.find_by_id(self.__srv_fr.get_all_friends_with_conversations()[i].get_id_friendship())
+                .get_person1()).get_surname()
+            pr2 = self.__srv_pr.find_by_id(
+                self.__srv_fr.find_by_id(self.__srv_fr.get_all_friends_with_conversations()[i].get_id_friendship())
+                .get_person2()).get_surname()
             print(f"[{i + 1}]-> {pr1} and {pr2} have a conversation")
         nb = int(input("Enter the number of the conversation you want to delete: "))
-        if nb > self.__srv_conv.size() or nb < 1:
+        if nb > len(self.__srv_fr.get_all_friends_with_conversations()) or nb < 1:
             print("Invalid Conversation Number !")
             return
-        self.__srv_conv.delete(self.__srv_conv.get_all()[nb - 1])
+        self.__srv_fr.delete_conversation(self.__srv_fr.get_all_friends_with_conversations()[nb - 1].
+                                          get_id_friendship())
         print("Conversation deleted successfully !")
 
     def ui_update_conversation(self):
         pass
 
     def ui_show_all_cnv(self):
-        if self.__srv_conv.size() == 0:
+        if len(self.__srv_fr.get_all_friends_with_conversations()) == 0:
             print("No conversations yet !")
             return
-        for elem in self.__srv_conv.get_all():
+        for elem in self.__srv_fr.get_all_friends_with_conversations():
             print(f"{self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(elem.get_id_friendship()).get_person1()).
                   get_surname()} has a conversation with "
-                  f"{self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(elem.get_id_friendship()).get_person2()).
-                  get_surname()}")
+                  f"{self.__srv_pr.find_by_id(self.__srv_fr.find_by_id(elem.get_id_friendship()).
+                                              get_person2()).get_surname()}")
             print(elem.get_text())
 
     # --{ NOTIFICATION MENU }----------------------------------------------------------------------------------

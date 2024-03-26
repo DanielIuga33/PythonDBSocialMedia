@@ -84,7 +84,7 @@ class RepoNotification:
         self.__update(idc, elem)
         self.__repo = self.__read()
 
-    def find_notifications(self, id_person: Notification):
+    def find_notifications(self, id_person):
         cursor = self.connect().cursor()
         sql = 'SELECT * FROM public."Notification" WHERE person = %s'
         cursor.execute(sql, (str(id_person),))
@@ -96,10 +96,10 @@ class RepoNotification:
         else:
             return -1
 
-    def __find_notification(self, idp: Notification):
+    def __find_notification(self, idn):
         cursor = self.connect().cursor()
         sql1 = 'SELECT id_notification FROM public."Notification" WHERE id_notification = %s LIMIT 1;'
-        cursor.execute(sql1, (str(idp.get_id_notification()),))
+        cursor.execute(sql1, (str(idn.get_id_notification()),))
         lista = cursor.fetchone()
         if lista is None:
             return -1
