@@ -113,7 +113,7 @@ class UserInterface:
 
     def notification_management(self, person: Person):
         print("-----------------------------------------------------------------")
-        print("|63                                                             |")
+        print("|                                                               |")
         print("|new:                                                           |")
         for elem in self.__srv_ntf.get_unread_notifications(person.get_id_person())[0]:
             length = len(elem.get_message())

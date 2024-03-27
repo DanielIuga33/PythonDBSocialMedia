@@ -150,7 +150,7 @@ class RepoPerson:
         cursor = conn.cursor()
         sql = ('SELECT id_person, name, surname, email, password, cnp, birthday,'
                'country, province, city, street, nr FROM public."Person" WHERE id_person= %s LIMIT 1;')
-        cursor.execute(sql, (idc,))
+        cursor.execute(sql, (str(idc),))
         elem = cursor.fetchone()
         if elem is None:
             return None

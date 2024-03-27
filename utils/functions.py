@@ -110,7 +110,3 @@ def password_register():
             if password == "x" or password == "X":
                 raise ValueError
 
-
-def delete_cascade(idp, repo_friendship: RepoFriendship, who):
-    if who == "person":
-        repo_friendship.delete_cascade(idp)

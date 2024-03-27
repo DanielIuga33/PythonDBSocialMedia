@@ -15,6 +15,9 @@ class ServiceRequest:
             raise Exception('Request does not exists !')
         self.__repo.delete(request)
 
+    def delete_cascade(self, id_person):
+        self.__repo.delete_cascade(id_person)
+
     def update(self, idc, request):
         self.__repo.update(idc, request)
 

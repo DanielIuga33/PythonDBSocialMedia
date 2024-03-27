@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from domain.notification import Notification
 from repo.repo_notification import RepoNotification
 
@@ -7,11 +9,14 @@ class ServiceNotification:
         self.__repo = repo
 
     def add(self, idp, text):
-        notification = Notification("0", idp, "unread", text)
+        notification = Notification("0", idp, "unread", text, datetime.now().strftime("%Y-%m-%d %H:%M"))
         self.__repo.add(notification)
 
-    def delete(self, notification):
-        self.__repo.delete(notification)
+    def delete(self, id_notification):
+        self.__repo.delete(id_notification)
+
+    def delete_cascade(self, id_person):
+        self.__repo.delete_cascade(id_person)
 
     def update(self, idn, new_notification):
         self.__repo.update(idn, new_notification)
@@ -38,7 +43,8 @@ class ServiceNotification:
         for elem in self.get_all():
             if elem.get_person() == id_person and elem.get_tip() == "unread":
                 result.append(elem)
-        return result, len(result)
+        sorted_result = sorted(result, key=lambda x: x.get_data())
+        return sorted_result, len(result)
 
     def set_notification_to_read(self, idn):
         ntf = self.__repo.find_notifications(idn)

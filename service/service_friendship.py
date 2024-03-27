@@ -13,6 +13,9 @@ class ServiceFriendship:
     def delete(self, fr: Friendship):
         self.__repo.delete(fr)
 
+    def delete_cascade(self, id_person):
+        self.__repo.delete_cascade(id_person)
+
     def find_friendship(self, person1, person2) -> Friendship:
         return self.__repo.find_friendship(person1, person2)
 

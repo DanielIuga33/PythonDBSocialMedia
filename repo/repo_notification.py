@@ -27,16 +27,16 @@ class RepoNotification:
         if self.connect() is None:
             raise Exception("↓ Something is wrong with the connection! ↓")
         cursor = self.connect().cursor()
-        cursor.execute('SELECT id_notification, person, tip, message FROM public."Notification"')
+        cursor.execute('SELECT id_notification, person, tip, message, data FROM public."Notification"')
         for elem in cursor.fetchall():
-            result.append(Notification(elem[0], elem[1], elem[2], elem[3]))
+            result.append(Notification(elem[0], elem[1], elem[2], elem[3], elem[4]))
         return result
 
     def __insert(self, elem: Notification):
         conn = self.connect()
         cursor = conn.cursor()
-        sql = 'INSERT INTO public."Notification" (person, tip, message) VALUES (%s, %s, %s)'
-        person_data = (str(elem.get_person()), elem.get_tip(), elem.get_message())
+        sql = 'INSERT INTO public."Notification" (person, tip, message, data) VALUES (%s, %s, %s, %s)'
+        person_data = (str(elem.get_person()), elem.get_tip(), elem.get_message(), elem.get_data())
         cursor.execute(sql, person_data)
         conn.commit()
         cursor.close()
@@ -45,7 +45,6 @@ class RepoNotification:
         conn = self.connect()
         cursor = conn.cursor()
         sql = 'DELETE FROM public."Notification" WHERE id_notification = %s'
-
         cursor.execute(sql, (str(elem.get_id_notification()),))
         conn.commit()
         cursor.close()
@@ -63,19 +62,17 @@ class RepoNotification:
     def __update(self, idp, p: Notification):
         conn = self.connect()
         cursor = conn.cursor()
-        sql = 'UPDATE public."Notification" SET person= %s, tip= %s, message = %s WHERE id_notification= %s'
-        cursor.execute(sql, (p.get_id_notification(), p.get_person(), p.get_message(), idp))
+        sql = 'UPDATE public."Notification" SET person= %s, tip= %s, message = %s, data = %s WHERE id_notification= %s'
+        cursor.execute(sql, (p.get_id_notification(), p.get_person(), p.get_message(),p.get_data(), idp))
         conn.commit()
         cursor.close()
 
     def add(self, elem: Notification):
-        #if self.__find_notification(elem) != -1:
-            #raise Exception('Notification already exists !')
         self.__repo.append(elem)
         self.__insert(elem)
 
     def delete(self, elem: Notification):
-        if self.__find_notification(elem) == -1:
+        if self.find_notification(elem) == -1:
             raise Exception('Notification does not exists !')
         self.__repo.remove(elem)
         self.__delete(elem)
@@ -96,9 +93,10 @@ class RepoNotification:
         else:
             return -1
 
-    def find_notification(self, idn):
+    def find_by_id_notification(self, idn):
         cursor = self.connect().cursor()
-        sql1 = 'SELECT id_notification FROM public."Notification" WHERE id_notification = %s LIMIT 1;'
+        sql1 = ('SELECT id_notification, person, tip, message, data FROM public."Notification"'
+                ' WHERE id_notification = %s LIMIT 1;')
         cursor.execute(sql1, (str(idn.get_id_notification()),))
         lista = cursor.fetchone()
         if lista is None:
@@ -106,7 +104,7 @@ class RepoNotification:
         elif len(lista) == 0:
             return -1
         else:
-            return 0
+            return Notification(lista[0], lista[1], lista[2], lista[3], lista[4])
 
     def get_all(self):
         return self.__repo

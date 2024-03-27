@@ -169,6 +169,8 @@ class Admin:
                 print("Invalid Person Number !")
                 return
             self.__srv_fr.delete_cascade(self.__srv_pr.get_all()[nb - 1].get_id_person())
+            self.__srv_req.delete_cascade(self.__srv_pr.get_all()[nb - 1].get_id_person())
+            self.__srv_ntf.delete_cascade(self.__srv_pr.get_all()[nb - 1].get_id_person())
             self.__srv_pr.delete(self.__srv_pr.get_all()[nb - 1].get_id_person())
             print("Person deleted successfully !")
         except Exception as e:
@@ -474,10 +476,21 @@ class Admin:
     def ui_del_notification(self):
         if self.__srv_ntf.size() == 0:
             print("No notifications yet !")
+        for i in range(0, self.__srv_ntf.size()):
+            x = self.__srv_pr.find_by_id(self.__srv_ntf.get_all()[i].get_person()).get_surname()
+            data = self.__srv_ntf.get_all()[i].get_data()
+            print(f"[{i + 1}]-> {data}: {x} <- {self.__srv_ntf.get_all()[i].get_message()}")
+        print("-----------------------------------------------------")
+        nb = int(input("Enter the number of the person you want to delete: "))
 
     def ui_update_notification(self):
         pass
 
     def ui_show_all_ntf(self):
+        if self.__srv_ntf.size() == 0:
+            print("No notifications yet !")
+            return
         for elem in self.__srv_ntf.get_all():
-            print(f"{self.__srv_pr.find_by_id(elem.get_person()).get_surname()}:  {elem.get_message()}")
+            x = self.__srv_pr.find_by_id(elem.get_person()).get_surname()
+            data = elem.get_data()
+            print(f"{data}: {x} <- {elem.get_message()}")
