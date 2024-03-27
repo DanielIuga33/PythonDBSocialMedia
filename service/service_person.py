@@ -20,6 +20,7 @@ class ServicePerson:
         self.__repo.update(idc, Person(idc, name, surname, email, password, cnp, birthday, country, province,
                                        city, street, nr))
 
+
     def find_by_id(self, idc):
         return self.__repo.find_by_id(idc)
 

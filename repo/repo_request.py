@@ -71,14 +71,10 @@ class RepoRequest:
         cursor.close()
 
     def add(self, elem: Request):
-        if self.find_request(elem) != -1:
-            raise Exception('Request already exists !')
         self.__repo.append(elem)
         self.__insert(elem)
 
     def delete(self, elem: Request):
-        if self.find_request(elem) == -1:
-            raise Exception('Request does not exists !')
         self.__repo.remove(elem)
         self.__delete(elem)
 

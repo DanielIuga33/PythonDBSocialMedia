@@ -6,9 +6,13 @@ class ServiceRequest:
         self.__repo = repo
 
     def add(self, request):
+        if self.find_request(request) != -1:
+            raise Exception('Request already exists !')
         self.__repo.add(request)
 
     def delete(self, request):
+        if self.find_request(request) == -1:
+            raise Exception('Request does not exists !')
         self.__repo.delete(request)
 
     def update(self, idc, request):
@@ -20,3 +24,5 @@ class ServiceRequest:
     def size(self):
         return self.__repo.size()
 
+    def find_request(self, elem):
+        return self.__repo.find_request(elem)

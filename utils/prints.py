@@ -53,3 +53,22 @@ def print_main_menu():
     print("         [1] Login")
     print("         [2] Register")
     print("         [x] Leave the program")
+
+
+def screen():
+    print("-----------------------------------------------------------------")
+    print("|                                                               |")
+    print("|  (1) NOTIFICATIONS                                            |")
+    print("|                                                               |")
+    print("|                                                               |")
+    print("|                                                               |")
+    print("|                                                               |")
+    print("|  (2) MESSENGER                                                |")
+    print("|                                                               |")
+    print("|                                                               |")
+    print("|                                                               |")
+    print("|                                         (S) SETTINGS          |")
+    print("|  (3) SEE PERSONS                       (help) INFO MENU       |")
+    print("|                                         (x) EXIT              |")
+    print("|                                                               |")
+    print("-----------------------------------------------------------------")

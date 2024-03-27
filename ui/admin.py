@@ -342,7 +342,13 @@ class Admin:
                 print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
             print("-----------------------------------------------------")
             pr1 = int(input("Enter the first person: "))
+            if pr1 > self.__srv_pr.size() or pr1 < 1:
+                print("Invalid Person Number !")
+                return
             pr2 = int(input("Enter the second person: "))
+            if pr2 > self.__srv_pr.size() or pr2 < 1:
+                print("Invalid Person Number !")
+                return
             if pr1 == pr2:
                 print("A person cannot be friend with himself !")
                 return
@@ -390,27 +396,32 @@ class Admin:
     # --{ CONVERSATION MENU }----------------------------------------------------------------------------------
 
     def ui_add_conversation(self):
-        # try:
-        for i in range(0, self.__srv_pr.size()):
-            print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
-        print("-----------------------------------------------------")
-        sender = int(input("Enter the person who sends the message: "))
-        receiver = int(input("Enter the person who receives the message: "))
-        if sender == receiver:
-            print("A person cannot message himself !")
-            return
-        sender = self.__srv_pr.get_all()[sender - 1].get_id_person()
-        receiver = self.__srv_pr.get_all()[receiver - 1].get_id_person()
-        if self.__srv_fr.find_friendship(sender, receiver) == -1:
-            print(f" {sender.get_name()} and {receiver.get_name()} need to be friends\n"
-                  f"in order to have a conversation !")
-            return
-        text = input("Enter the message: ")
-        friendship = self.__srv_fr.find_friendship(sender, receiver)
-        self.__srv_fr.add_conversation(self.__srv_pr.find_by_id(sender), friendship, text)
-
-    # except Exception as e:
-    # print(e)
+        try:
+            for i in range(0, self.__srv_pr.size()):
+                print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
+            print("-----------------------------------------------------")
+            sender = int(input("Enter the person who sends the message: "))
+            if sender > self.__srv_pr.size() or sender < 1:
+                print("Invalid Person Number !")
+                return
+            receiver = int(input("Enter the person who receives the message: "))
+            if receiver > self.__srv_pr.size() or receiver < 1:
+                print("Invalid Person Number !")
+                return
+            if sender == receiver:
+                print("A person cannot message himself !")
+                return
+            sender = self.__srv_pr.get_all()[sender - 1].get_id_person()
+            receiver = self.__srv_pr.get_all()[receiver - 1].get_id_person()
+            if self.__srv_fr.find_friendship(sender, receiver) == -1:
+                print(f" {sender.get_name()} and {receiver.get_name()} need to be friends\n"
+                      f"in order to have a conversation !")
+                return
+            text = input("Enter the message: ")
+            friendship = self.__srv_fr.find_friendship(sender, receiver)
+            self.__srv_fr.add_conversation(self.__srv_pr.find_by_id(sender), friendship, text)
+        except Exception as e:
+            print(e)
 
     def ui_del_conversation(self):
         if len(self.__srv_fr.get_all_friends_with_conversations()) == 0:
@@ -448,13 +459,25 @@ class Admin:
 
     # --{ NOTIFICATION MENU }----------------------------------------------------------------------------------
     def ui_add_notification(self):
-        pass
+        for i in range(0, self.__srv_pr.size()):
+            print(f"[{i + 1}]-> {self.__srv_pr.get_all()[i]}")
+        print("-----------------------------------------------------")
+        pr = int(input("Enter the person you want to add a notification: "))
+        if pr > self.__srv_pr.size() or pr < 1:
+            print("Invalid Person Number !")
+            return
+        person = self.__srv_pr.get_all()[pr - 1].get_id_person()
+        msg = input("Enter the notification message you want to send: ")
+        self.__srv_ntf.add(person, msg)
+        print("Notification added successfully !")
 
     def ui_del_notification(self):
-        pass
+        if self.__srv_ntf.size() == 0:
+            print("No notifications yet !")
 
     def ui_update_notification(self):
         pass
 
     def ui_show_all_ntf(self):
-        pass
+        for elem in self.__srv_ntf.get_all():
+            print(f"{self.__srv_pr.find_by_id(elem.get_person()).get_surname()}:  {elem.get_message()}")

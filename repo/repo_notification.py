@@ -69,8 +69,8 @@ class RepoNotification:
         cursor.close()
 
     def add(self, elem: Notification):
-        if self.__find_notification(elem) != -1:
-            raise Exception('Notification already exists !')
+        #if self.__find_notification(elem) != -1:
+            #raise Exception('Notification already exists !')
         self.__repo.append(elem)
         self.__insert(elem)
 
@@ -96,7 +96,7 @@ class RepoNotification:
         else:
             return -1
 
-    def __find_notification(self, idn):
+    def find_notification(self, idn):
         cursor = self.connect().cursor()
         sql1 = 'SELECT id_notification FROM public."Notification" WHERE id_notification = %s LIMIT 1;'
         cursor.execute(sql1, (str(idn.get_id_notification()),))

@@ -1,12 +1,17 @@
 import uuid
 
+from domain.person import Person
+from service.service_friendship import ServiceFriendship
+from service.service_notification import ServiceNotification
+from service.service_request import ServiceRequest
 from ui.admin import Admin
 from utils.prints import *
 from utils.functions import *
 
 
 class UserInterface:
-    def __init__(self, srv_pr: ServicePerson, srv_fr, srv_request, srv_notification):
+    def __init__(self, srv_pr: ServicePerson, srv_fr: ServiceFriendship, srv_request: ServiceRequest,
+                 srv_notification: ServiceNotification):
         self.__srv_pr = srv_pr
         self.__srv_req = srv_request
         self.__srv_fr = srv_fr
@@ -72,9 +77,49 @@ class UserInterface:
             else:
                 self.__srv_pr.add(uuid.uuid4(), name, surname, email, password, "", "", "",
                                   "", "", "", "")
-
+            print(" You have successfully registered your account !")
+            print("     LOGIN")
+            return 1
         except ValueError:
             return None
 
     def user_handler(self, person):
-        pass
+        print("\t  **** WELCOME ***")
+        if self.__srv_ntf.get_unread_notifications(person.get_id_person())[1] > 0:
+            if self.__srv_ntf.get_unread_notifications(person.get_id_person())[1] > 1:
+                t = "notifications"
+            else:
+                t = "notification"
+            print(f" You have {self.__srv_ntf.get_unread_notifications(person.get_id_person())[1]} "
+                  f"unread {t}")
+        while True:
+            screen()
+            option = input("Give here your option: ")
+            match option:
+                case "1":
+                    self.notification_management(person)
+                case "2":
+                    pass
+                case "3":
+                    pass
+                case "s":
+                    pass
+                case "help":
+                    pass
+                case "x":
+                    break
+                case _:
+                    print("Invalid option !")
+
+    def notification_management(self, person: Person):
+        print("-----------------------------------------------------------------")
+        print("|63                                                             |")
+        print("|new:                                                           |")
+        for elem in self.__srv_ntf.get_unread_notifications(person.get_id_person())[0]:
+            length = len(elem.get_message())
+            empty = " " * (62 - length)
+            print(f"| {elem.get_message()}{empty}|")
+            print(f"|                                                               |")
+
+
+
