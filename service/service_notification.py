@@ -41,7 +41,7 @@ class ServiceNotification:
     def get_read_notifications(self, id_person):
         result = []
         for elem in self.get_all():
-            if elem.get_person() == id_person and elem.get_tip() == "unread":
+            if elem.get_person() == id_person and elem.get_tip() == "read":
                 result.append(elem)
         sorted_result = sorted(result, key=lambda x: x.get_data())
         return sorted_result, len(result)

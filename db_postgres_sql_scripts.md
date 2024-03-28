@@ -80,7 +80,8 @@ create table "Notification"
     id_notification uuid default uuid_generate_v4(),
     person          uuid,
     tip            varchar,
-    message         varchar
+    message         varchar,
+    data           varchar
 );
 
 alter table "Notification"

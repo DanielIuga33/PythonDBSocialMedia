@@ -101,7 +101,7 @@ class UserInterface:
                 case "2":
                     pass
                 case "3":
-                    pass
+                    self.people_management(person)
                 case "s":
                     pass
                 case "help":
@@ -112,14 +112,32 @@ class UserInterface:
                     print("Invalid option !")
 
     def notification_management(self, person: Person):
+        if len(self.__srv_ntf.all_notifications_for_a_person(person.get_id_person())) == 0:
+            print("No notifications for now")
+            return
         print("-----------------------------------------------------------------")
         print("|                                                               |")
-        print("|new:                                                           |")
+        if self.__srv_ntf.get_unread_notifications(person.get_id_person())[1] > 0:
+            print("|new:                                                           |")
         for elem in self.__srv_ntf.get_unread_notifications(person.get_id_person())[0]:
             length = len(elem.get_message())
             empty = " " * (62 - length)
             print(f"| {elem.get_message()}{empty}|")
             print(f"|                                                               |")
+        if self.__srv_ntf.get_read_notifications(person.get_id_person())[1] > 0:
+            print("|read:                                                           |")
+        for elem in self.__srv_ntf.get_read_notifications(person.get_id_person())[0]:
+            length = len(elem.get_message())
+            empty = " " * (62 - length)
+            print(f"| {elem.get_message()}{empty}|")
+            print(f"|                                                               |")
+        print("-----------------------------------------------------------------")
+        input("Press ENTER to proceed: ")
+
+    def people_management(self, person):
+        if self.__srv_pr.size() == 1:
+            print("No persons available")
+
 
 
 

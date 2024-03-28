@@ -19,5 +19,7 @@ if __name__ == '__main__':
     srv_request = ServiceRequest(repoRequest)
     srv_friendship = ServiceFriendship(repoFriendship)
     srv_notification = ServiceNotification(repoNotification)
+
     ui = UserInterface(srv_person, srv_friendship, srv_request, srv_notification)
+
     ui.run()

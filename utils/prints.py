@@ -57,9 +57,7 @@ def print_main_menu():
 
 def screen():
     print("-----------------------------------------------------------------")
-    print("|                                                               |")
     print("|  (1) NOTIFICATIONS                  (3) SEE PERSONS           |")
-    print("|                                                               |")
     print("|                                                               |")
     print("|                                     (S) SETTINGS              |")
     print("|  (2) MESSENGER                      (help) INFO MENU          |")
